@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,21 +117,49 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
 
-            mLED1.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    if(mConnectedThread != null) //First check to make sure thread created
-                        mConnectedThread.write("1");
-                }
-            }); //mLED1 클릭 시 쓰레드에 1 입력
+//            mLED1.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (mConnectedThread != null) { //First check to make sure thread created
+//                        mConnectedThread.write("1");
+//                    }
+//                }
+//            });
 
-            mMotor1.setOnClickListener(new View.OnClickListener() {
+            mLED1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
-                    if(mConnectedThread != null)
-                        mConnectedThread.write("2");
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (mConnectedThread != null) {
+                        if (isChecked) {
+                            mConnectedThread.write("1"); //LED 토글 클릭시 쓰레드에 1 입력
+                        }else {
+                            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 3 입력
+                            }
+                        }
+                    }
+            });
+//
+//            mMotor1.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (mConnectedThread != null) {
+//                        mConnectedThread.write("2");
+//                    }
+//                }
+//            });
+
+            mMotor1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (mConnectedThread != null) {
+                        if (isChecked) {
+                            mConnectedThread.write("2"); //Motor 토글 클릭시 쓰레드에 2 입력
+                        } else {
+                            mConnectedThread.write("4"); //Motor 토글 해제시 쓰레드에 4 입력
+                        }
+                    }
                 }
-            });//mMotor1 클릭 시 쓰레드에 2 입력
+            });
 
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {
