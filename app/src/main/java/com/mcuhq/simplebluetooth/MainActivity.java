@@ -17,6 +17,8 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,14 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private final static int CONNECTING_STATUS = 3; // used in bluetooth handler to identify message status
 
     // GUI Components
-    private TextView mBluetoothStatus;
-    private TextView mReadBuffer;
-    private Button mScanBtn;
-    private Button mOffBtn;
-    private Button mListPairedDevicesBtn;
-    private Button mDiscoverBtn;
+    private TextView mBluetoothStatus, mReadBuffer;
+    private Button mScanBtn, mOffBtn, mListPairedDevicesBtn, mDiscoverBtn, msentNumber;
     private ListView mDevicesListView;
     private CheckBox mLED1, mMotor1;
+    private EditText mWriteNumber;
 
     private BluetoothAdapter mBTAdapter;
     private Set<BluetoothDevice> mPairedDevices;
@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         mListPairedDevicesBtn = (Button)findViewById(R.id.paired_btn);
         mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
         mMotor1 = (CheckBox)findViewById(R.id.checkbox_motor);
+        mWriteNumber = (EditText)findViewById(R.id.writeNumber);
+        msentNumber = (Button)findViewById(R.id.sentNumber);
 
         mBTArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // get a handle on the bluetooth radio
@@ -131,14 +133,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (mConnectedThread != null) {
                         if (isChecked) {
-                            mConnectedThread.write("1"); //LED 토글 클릭시 쓰레드에 1 입력
+                            mConnectedThread.write("LEDOn"); //LED 토글 클릭시 쓰레드에 1 입력
                         }else {
-                            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 3 입력
+                            mConnectedThread.write("LEDOff"); //LED 토글 해제시 쓰레드에 3 입력
                             }
                         }
                     }
             });
-//
+
 //            mMotor1.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -153,14 +155,43 @@ public class MainActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (mConnectedThread != null) {
                         if (isChecked) {
-                            mConnectedThread.write("2"); //Motor 토글 클릭시 쓰레드에 2 입력
+                            mConnectedThread.write("MotorOn"); //Motor 토글 클릭시 쓰레드에 2 입력
                         } else {
-                            mConnectedThread.write("4"); //Motor 토글 해제시 쓰레드에 4 입력
+                            mConnectedThread.write("MotorOff"); //Motor 토글 해제시 쓰레드에 4 입력
                         }
                     }
                 }
             });
 
+            mWriteNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (mConnectedThread != null) {
+                        msentNumber.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String numberStr = editable.toString();
+                                try {
+                                    int number = Integer.parseInt(numberStr);
+                                    mConnectedThread.write(String.valueOf(number)); //숫자를 쓰레드에 전송
+                                } catch (NumberFormatException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

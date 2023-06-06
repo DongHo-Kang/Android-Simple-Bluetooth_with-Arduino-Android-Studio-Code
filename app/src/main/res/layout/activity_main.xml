@@ -21,17 +21,43 @@
         android:scaleY="1.0"
         android:text="LED"
         android:textStyle="bold" />
+
     <CheckBox
         android:id="@id/checkbox_motor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_gravity="left"
+        android:layout_marginTop="10dp"
         android:checked="false"
         android:scaleX="1.0"
         android:scaleY="1.0"
         android:text="선풍기"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/writeNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="1~9사이의 숫자를 입력하세요."
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="확인"
+            android:textStyle="bold"
+            android:id="@+id/sentNumber"/>
+
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -111,4 +137,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:choiceMode="singleChoice" />
+
+
 </LinearLayout>
