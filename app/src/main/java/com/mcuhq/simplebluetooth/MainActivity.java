@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int CONNECTING_STATUS = 3; // used in bluetooth handler to identify message status
 
     // GUI Components
-    private TextView mBluetoothStatus, mReadBuffer;
+    private TextView mBluetoothStatus, mReadBuffer, mLedStatus, mReceiveNumber;
     private Button mScanBtn, mOffBtn, mListPairedDevicesBtn, mDiscoverBtn, msentNumber;
     private ListView mDevicesListView;
     private CheckBox mLED1, mMotor1;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler; // Our main handler that will receive callback notifications
     private ConnectedThread mConnectedThread; // bluetooth background worker thread to send and receive data
     private BluetoothSocket mBTSocket = null; // bi-directional client-to-client data path
-
+    private int mRandomNumber = 0;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         mListPairedDevicesBtn = (Button)findViewById(R.id.paired_btn);
         mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
         mMotor1 = (CheckBox)findViewById(R.id.checkbox_motor);
-        mWriteNumber = (EditText)findViewById(R.id.writeNumber);
-        msentNumber = (Button)findViewById(R.id.sentNumber);
+        mLedStatus = (TextView) findViewById(R.id.led_status);
+        mReceiveNumber = (TextView) findViewById(R.id.receiveNumber);
 
         mBTArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // get a handle on the bluetooth radio
@@ -99,7 +99,19 @@ public class MainActivity extends AppCompatActivity {
                 if(msg.what == MESSAGE_READ){
                     String readMessage = null;
                     readMessage = new String((byte[]) msg.obj, StandardCharsets.UTF_8);
-                    mReadBuffer.setText(readMessage);
+                    mReadBuffer.setText(readMessage); //난수 받아와서 읽음
+                    //수신받으면 행동함. 5를 받으면 LED On, 6을 받으면 LED Off.
+                    if(readMessage.equals("5")){
+                        mLedStatus.setText("LED On");
+                    }else if(readMessage.equals("6")){
+                        mLedStatus.setText("LED Off");
+                    }else {
+                        try {
+                            mReceiveNumber.setText(readMessage); //난수 받아와서 읽음
+                        }catch (NumberFormatException e){
+                            e.printStackTrace();
+                        }
+                    }
                 }
 
                 if(msg.what == CONNECTING_STATUS){
@@ -129,13 +141,16 @@ public class MainActivity extends AppCompatActivity {
 //            });
 
             mLED1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (mConnectedThread != null) {
                         if (isChecked) {
-                            mConnectedThread.write("LEDOn"); //LED 토글 클릭시 쓰레드에 1 입력
+                            mConnectedThread.write("1"); //LED 토글 클릭시 쓰레드에 1 입력
+                            mLedStatus.setText("LED On");
                         }else {
-                            mConnectedThread.write("LEDOff"); //LED 토글 해제시 쓰레드에 3 입력
+                            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 3 입력
+                            mLedStatus.setText("LED Off");
                             }
                         }
                     }
@@ -155,43 +170,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (mConnectedThread != null) {
                         if (isChecked) {
-                            mConnectedThread.write("MotorOn"); //Motor 토글 클릭시 쓰레드에 2 입력
+                            mConnectedThread.write("2"); //Motor 토글 클릭시 쓰레드에 2 입력
                         } else {
-                            mConnectedThread.write("MotorOff"); //Motor 토글 해제시 쓰레드에 4 입력
+                            mConnectedThread.write("4"); //Motor 토글 해제시 쓰레드에 4 입력
                         }
                     }
                 }
             });
 
-            mWriteNumber.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (mConnectedThread != null) {
-                        msentNumber.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String numberStr = editable.toString();
-                                try {
-                                    int number = Integer.parseInt(numberStr);
-                                    mConnectedThread.write(String.valueOf(number)); //숫자를 쓰레드에 전송
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
-                }
-            });
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

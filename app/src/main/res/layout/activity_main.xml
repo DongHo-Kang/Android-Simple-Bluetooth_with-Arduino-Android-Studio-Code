@@ -31,33 +31,53 @@
         android:checked="false"
         android:scaleX="1.0"
         android:scaleY="1.0"
-        android:text="선풍기"
+        android:text="깜빡이기"
         android:textStyle="bold" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/writeNumber"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="1~9사이의 숫자를 입력하세요."
-            android:layout_gravity="left"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            />
+            android:layout_weight="0.1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="LED 상태:"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
-        <Button
+        <TextView
+            android:id="@+id/led_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="확인"
+            android:layout_weight="0.9"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textStyle="bold"
-            android:id="@+id/sentNumber"/>
-
-
+            android:textSize="20dp"
+            android:layout_marginLeft="15dp"
+            android:text="LED Off" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="ESP32에서 보낸 숫자:"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
 
+        <TextView
+            android:id="@+id/receiveNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text=""
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -112,7 +132,8 @@
         android:id="@+id/scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="블루투스 켜기" />
+        android:text="블루투스 켜기"
+        />
 
     <Button
         android:id="@+id/off"
@@ -137,6 +158,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:choiceMode="singleChoice" />
+
+
 
 
 </LinearLayout>
