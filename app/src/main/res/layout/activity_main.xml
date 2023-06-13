@@ -130,25 +130,28 @@
 
     <Button
         android:id="@+id/scan"
+        style="@android:style/Widget.Button.Toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="블루투스 켜기"
-        />
+        android:text="블루투스 켜기" />
 
     <Button
         android:id="@+id/off"
+        style="@android:style/Widget.Button.Toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="블루투스 끄기" />
 
     <Button
         android:id="@+id/paired_btn"
+        style="@android:style/Widget.Button.Toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="연결된 디바이스" />
 
     <Button
         android:id="@+id/discover"
+        style="@android:style/Widget.Button.Toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="새로운 장치 찾기" />

@@ -44,25 +44,24 @@ public class MainActivity extends AppCompatActivity {
 
     private static final UUID BT_MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // "random" unique identifier
 
-    // #defines for identifying shared types between calling functions
-    private final static int REQUEST_ENABLE_BT = 1; // used to identify adding bluetooth names
-    public final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
-    private final static int CONNECTING_STATUS = 3; // used in bluetooth handler to identify message status
+    // 함수 호출하는 공유 유형을 식별하기 위한 정의
+    private final static int REQUEST_ENABLE_BT = 1; // 추가 블루투스 이름을 식별하는 데 사용.
+    public final static int MESSAGE_READ = 2; // 메시지 업데이트를 식별하기 위해 블루투스 핸들러에서 사용
+    final static int CONNECTING_STATUS = 3; // 메시지 상태를 식별하기 위해 블루투스 핸들러에서 사용
 
     // GUI Components
     private TextView mBluetoothStatus, mReadBuffer, mLedStatus, mReceiveNumber;
-    private Button mScanBtn, mOffBtn, mListPairedDevicesBtn, mDiscoverBtn, msentNumber;
+    private Button mScanBtn, mOffBtn, mListPairedDevicesBtn, mDiscoverBtn;
     private ListView mDevicesListView;
     private CheckBox mLED1, mMotor1;
-    private EditText mWriteNumber;
 
     private BluetoothAdapter mBTAdapter;
     private Set<BluetoothDevice> mPairedDevices;
     private ArrayAdapter<String> mBTArrayAdapter;
 
-    private Handler mHandler; // Our main handler that will receive callback notifications
-    private ConnectedThread mConnectedThread; // bluetooth background worker thread to send and receive data
-    private BluetoothSocket mBTSocket = null; // bi-directional client-to-client data path
+    private Handler mHandler; // 콜백 알림을 받을 메인 핸들러
+    private ConnectedThread mConnectedThread; // 데이터를 송수신하는 블루투스 백그라운드 작업자 스레드
+    private BluetoothSocket mBTSocket = null; // 양방향 클라이언트 간 데이터 경로
     private int mRandomNumber = 0;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -82,13 +81,13 @@ public class MainActivity extends AppCompatActivity {
         mReceiveNumber = (TextView) findViewById(R.id.receiveNumber);
 
         mBTArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // get a handle on the bluetooth radio
+        mBTAdapter = BluetoothAdapter.getDefaultAdapter(); // 블루투스 기능에 대한 기본 어댑터를 가져오는 매서드
 
         mDevicesListView = (ListView)findViewById(R.id.devices_list_view);
-        mDevicesListView.setAdapter(mBTArrayAdapter); // assign model to view
+        mDevicesListView.setAdapter(mBTArrayAdapter); // 모델 할당
         mDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
-        // Ask for location permission if not already allowed
+        // 허용되지 않은 경우 위치권한 요청
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
@@ -103,8 +102,10 @@ public class MainActivity extends AppCompatActivity {
                     //수신받으면 행동함. 5를 받으면 LED On, 6을 받으면 LED Off.
                     if(readMessage.equals("5")){
                         mLedStatus.setText("LED On");
+                        mLED1.setChecked(true);
                     }else if(readMessage.equals("6")){
                         mLedStatus.setText("LED Off");
+                        mLED1.setChecked(false);
                     }else {
                         try {
                             mReceiveNumber.setText(readMessage); //난수 받아와서 읽음
@@ -125,22 +126,13 @@ public class MainActivity extends AppCompatActivity {
         };
 
         if (mBTArrayAdapter == null) {
-            // Device does not support Bluetooth
+            // 블루투스를 지원하지 않음
             mBluetoothStatus.setText("상태: 블루투스 연결 없음");
             Toast.makeText(getApplicationContext(),"블루투스 연결 없음",Toast.LENGTH_SHORT).show();
         }
         else {
 
-//            mLED1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (mConnectedThread != null) { //First check to make sure thread created
-//                        mConnectedThread.write("1");
-//                    }
-//                }
-//            });
-
-            mLED1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      mLED1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -155,15 +147,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
             });
-
-//            mMotor1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (mConnectedThread != null) {
-//                        mConnectedThread.write("2");
-//                    }
-//                }
-//            });
 
             mMotor1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -222,15 +205,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Enter here after user selects "yes" or "no" to enabling radio
+    // 사용자가 무선 활성화에 대해 "예" 또는 "아니오"를 선택한 후 입력하기.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent Data){
-        // Check which request we're responding to
+        // 응답 중인 요천 확인
         if (requestCode == REQUEST_ENABLE_BT) {
-            // Make sure the request was successful
+            //요청이 성공했는지 확인
             if (resultCode == RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
+                //연결될 기기 선택
+                //Intent 데이터 Uri는 선택 연결된 기기를 식별
                 mBluetoothStatus.setText("설정 완료");
             }
             else
@@ -239,20 +222,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bluetoothOff(){
-        mBTAdapter.disable(); // turn off
+        mBTAdapter.disable(); //끄기
         mBluetoothStatus.setText("블루투스 비활성화");
         Toast.makeText(getApplicationContext(),"블루투스 꺼짐", Toast.LENGTH_SHORT).show();
     }
 
     private void discover(){
-        // Check if the device is already discovering
+        //장치가 이미 검색 중인지 확인
         if(mBTAdapter.isDiscovering()){
             mBTAdapter.cancelDiscovery();
             Toast.makeText(getApplicationContext(),"탐색 중단",Toast.LENGTH_SHORT).show();
         }
         else{
             if(mBTAdapter.isEnabled()) {
-                mBTArrayAdapter.clear(); // clear items
+                mBTArrayAdapter.clear(); //아이템 초기화
                 mBTAdapter.startDiscovery();
                 Toast.makeText(getApplicationContext(), "탐색 시작", Toast.LENGTH_SHORT).show();
                 registerReceiver(blReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
@@ -269,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             if(BluetoothDevice.ACTION_FOUND.equals(action)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // add the name to the list
+                //목록에 기기이름 추가
                 mBTArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 mBTArrayAdapter.notifyDataSetChanged();
             }
@@ -280,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         mBTArrayAdapter.clear();
         mPairedDevices = mBTAdapter.getBondedDevices();
         if(mBTAdapter.isEnabled()) {
-            // put it's one to the adapter
+            //어댑터 하나 추가.
             for (BluetoothDevice device : mPairedDevices)
                 mBTArrayAdapter.add(device.getName() + "\n" + device.getAddress());
 
@@ -300,12 +283,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             mBluetoothStatus.setText("연결중...");
-            // Get the device MAC address, which is the last 17 chars in the View
+            //마지막 17자인 장치 MAC주소를 가져옴.
             String info = ((TextView) view).getText().toString();
             final String address = info.substring(info.length() - 17);
             final String name = info.substring(0,info.length() - 17);
 
-            // Spawn a new thread to avoid blocking the GUI one
+            //GUI를 차단하지 않도록 새 스레드 생성
             new Thread()
             {
                 @Override
@@ -320,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
                         fail = true;
                         Toast.makeText(getBaseContext(), "소켓 생성 실패", Toast.LENGTH_SHORT).show();
                     }
-                    // Establish the Bluetooth socket connection.
+                    //블루투스 소켓 연결을 설정.
                     try {
                         mBTSocket.connect();
                     } catch (IOException e) {
@@ -330,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                             mHandler.obtainMessage(CONNECTING_STATUS, -1, -1)
                                     .sendToTarget();
                         } catch (IOException e2) {
-                            //insert code to deal with this
+                            //이를 처리하기 위한 코드 삽입
                             Toast.makeText(getBaseContext(), "소켓 생성 실패", Toast.LENGTH_SHORT).show();
                         }
                     }
