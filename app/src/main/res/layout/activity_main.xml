@@ -8,10 +8,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#000000"
     tools:context="com.mcuhq.simplebluetooth.MainActivity">
 
+    <TextView
+        android:layout_width="391dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="202316702 강동호 프로젝트"
+        android:textStyle="bold"
+        android:textSize="20dp"/>
+
     <CheckBox
-        android:id="@+id/checkbox_led_1"
+        android:id="@+id/checkbox_led"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
@@ -20,10 +29,11 @@
         android:scaleX="1.0"
         android:scaleY="1.0"
         android:text="LED"
-        android:textStyle="bold" />
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"/>
 
     <CheckBox
-        android:id="@id/checkbox_motor"
+        android:id="@+id/checkbox_blink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
@@ -32,7 +42,8 @@
         android:scaleX="1.0"
         android:scaleY="1.0"
         android:text="깜빡이기"
-        android:textStyle="bold" />
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -50,13 +61,14 @@
             android:id="@+id/led_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:layout_weight="0.9"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textStyle="bold"
+            android:text="LED Off"
             android:textSize="20dp"
-            android:layout_marginLeft="15dp"
-            android:text="LED Off" />
+            android:textStyle="bold"
+            android:textColor="#FF0000"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -76,6 +88,7 @@
             android:ellipsize="end"
             android:text=""
             android:textSize="20dp"
+            android:textColor="#FF0000"
             android:textStyle="bold"/>
     </LinearLayout>
 
@@ -92,6 +105,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="RX:"
+            android:textSize="20dp"
             android:textStyle="bold" />
 
         <TextView
@@ -101,6 +115,7 @@
             android:layout_weight="0.9"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textSize="20dp"
             android:text="&lt;Read Buffer>" />
     </LinearLayout>
 
@@ -116,6 +131,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="상태:"
+            android:textSize="25dp"
             android:textStyle="bold" />
 
         <TextView
@@ -125,6 +141,7 @@
             android:layout_weight="0.9"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textSize="25dp"
             android:text="&lt;Bluetooth Status>" />
     </LinearLayout>
 

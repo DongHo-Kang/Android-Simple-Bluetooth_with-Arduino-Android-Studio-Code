@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mBluetoothStatus, mReadBuffer, mLedStatus, mReceiveNumber;
     private Button mScanBtn, mOffBtn, mListPairedDevicesBtn, mDiscoverBtn;
     private ListView mDevicesListView;
-    private CheckBox mLED1, mMotor1;
+    private CheckBox mLED1, mBlink;
 
     private BluetoothAdapter mBTAdapter;
     private Set<BluetoothDevice> mPairedDevices;
@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         mOffBtn = (Button)findViewById(R.id.off);
         mDiscoverBtn = (Button)findViewById(R.id.discover);
         mListPairedDevicesBtn = (Button)findViewById(R.id.paired_btn);
-        mLED1 = (CheckBox)findViewById(R.id.checkbox_led_1);
-        mMotor1 = (CheckBox)findViewById(R.id.checkbox_motor);
+        mLED1 = (CheckBox)findViewById(R.id.checkbox_led);
+        mBlink = (CheckBox)findViewById(R.id.checkbox_blink);
         mLedStatus = (TextView) findViewById(R.id.led_status);
         mReceiveNumber = (TextView) findViewById(R.id.receiveNumber);
 
@@ -100,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
                     readMessage = new String((byte[]) msg.obj, StandardCharsets.UTF_8);
                     mReadBuffer.setText(readMessage); //난수 받아와서 읽음
                     //수신받으면 행동함. 5를 받으면 LED On, 6을 받으면 LED Off.
-                    if(readMessage.equals("5")){
+                    if(readMessage.equals("-1")){
                         mLedStatus.setText("LED On");
                         mLED1.setChecked(true);
-                    }else if(readMessage.equals("6")){
+                    }else if(readMessage.equals("-2")) {
                         mLedStatus.setText("LED Off");
                         mLED1.setChecked(false);
-                    }else {
+                    }else if(0 <= Integer.parseInt(readMessage)){
                         try {
                             mReceiveNumber.setText(readMessage); //난수 받아와서 읽음
                         }catch (NumberFormatException e){
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
 
-      mLED1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            mLED1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -148,14 +148,16 @@ public class MainActivity extends AppCompatActivity {
                     }
             });
 
-            mMotor1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            mBlink.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (mConnectedThread != null) {
                         if (isChecked) {
-                            mConnectedThread.write("2"); //Motor 토글 클릭시 쓰레드에 2 입력
+                            mConnectedThread.write("2"); //Blink 토글 클릭시 쓰레드에 2 입력
+                            mLedStatus.setText("LED가 깜박이는 중입니다.");
                         } else {
-                            mConnectedThread.write("4"); //Motor 토글 해제시 쓰레드에 4 입력
+                            mConnectedThread.write("4"); //Blink 토글 해제시 쓰레드에 4 입력
+                            mLedStatus.setText("LED가 꺼졌습니다.");
                         }
                     }
                 }
