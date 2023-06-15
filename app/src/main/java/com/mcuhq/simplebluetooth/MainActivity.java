@@ -136,60 +136,51 @@ public class MainActivity extends AppCompatActivity {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (mConnectedThread != null) {
-                        if (isChecked) {
-                            mConnectedThread.write("1"); //LED 토글 클릭시 쓰레드에 1 입력
-                            mLedStatus.setText("LED On");
-                        }else {
-                            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 3 입력
-                            mLedStatus.setText("LED Off");
-                            }
-                        }
+                    if (isChecked) {
+                        ledOn(); //ledOn() 메서드 호출
+                    }else {
+                        ledOff(); //ledOff() 메서드 호출
                     }
+                }
             });
 
             mBlink.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (mConnectedThread != null) {
-                        if (isChecked) {
-                            mConnectedThread.write("2"); //Blink 토글 클릭시 쓰레드에 2 입력
-                            mLedStatus.setText("LED가 깜박이는 중입니다.");
-                        } else {
-                            mConnectedThread.write("4"); //Blink 토글 해제시 쓰레드에 4 입력
-                            mLedStatus.setText("LED가 꺼졌습니다.");
-                        }
+                    if (isChecked) {
+                        blinkOn(); //blinkOn() 메서드 호출
+                    } else {
+                        blinkOff(); //blinkOff() 메서드 호출
                     }
                 }
             });
-
 
             mScanBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     bluetoothOn();
-                }
+                } //bluetoothOn 메소드를 불러온다.
             });
 
             mOffBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     bluetoothOff();
-                }
+                } //bluetoothOff 메소드를 불러온다.
             });
 
             mListPairedDevicesBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
                     listPairedDevices();
-                }
+                } //listPairedDevices 메소드를 불러온다.
             });
 
             mDiscoverBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     discover();
-                }
+                } //discover 메소드를 불러온다.
             });
         }
     }
@@ -274,6 +265,32 @@ public class MainActivity extends AppCompatActivity {
         else
             Toast.makeText(getApplicationContext(), "블루투스 꺼져 있음.", Toast.LENGTH_SHORT).show();
     }
+
+    private void ledOn(){
+        if (mConnectedThread != null) {
+            mConnectedThread.write("1"); //LED 토글 클릭시 쓰레드에 1 입력
+            mLedStatus.setText("LED On");
+        }
+    }
+    private void ledOff(){
+        if(mConnectedThread != null){
+            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 1 입력
+            mLedStatus.setText("LED Off");
+        }
+    }
+    private void blinkOn(){
+        if(mConnectedThread != null){
+            mConnectedThread.write("2"); //Blink 토글 클릭시 쓰레드에 2 입력
+            mLedStatus.setText("LED가 깜박이는 중입니다.");
+        }
+    }
+    private void blinkOff(){
+        if(mConnectedThread != null){
+            mConnectedThread.write("4"); //Blink 토글 해제시 쓰레드에 2 입력
+            mLedStatus.setText("LED가 꺼졌습니다.");
+        }
+    }
+
 
     private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
         @Override

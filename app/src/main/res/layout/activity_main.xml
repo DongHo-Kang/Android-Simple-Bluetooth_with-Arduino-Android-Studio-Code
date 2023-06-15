@@ -41,7 +41,7 @@
         android:checked="false"
         android:scaleX="1.0"
         android:scaleY="1.0"
-        android:text="깜빡이기"
+        android:text="깜박이기"
         android:textSize="20dp"
         android:textColor="#FFFFFF"/>
     <LinearLayout
