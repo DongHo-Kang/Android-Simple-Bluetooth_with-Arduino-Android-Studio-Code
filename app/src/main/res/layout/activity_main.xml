@@ -131,7 +131,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="상태:"
-            android:textSize="25dp"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
         <TextView
@@ -141,7 +141,7 @@
             android:layout_weight="0.9"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="25dp"
+            android:textSize="15dp"
             android:text="&lt;Bluetooth Status>" />
     </LinearLayout>
 

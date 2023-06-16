@@ -99,19 +99,23 @@ public class MainActivity extends AppCompatActivity {
                     String readMessage = null;
                     readMessage = new String((byte[]) msg.obj, StandardCharsets.UTF_8);
                     mReadBuffer.setText(readMessage); //난수 받아와서 읽음
-                    //수신받으면 행동함. 5를 받으면 LED On, 6을 받으면 LED Off.
-                    if(readMessage.equals("-1")){
+
+                    int receivedNumber;
+                    try{
+                        receivedNumber = Integer.parseInt(readMessage.trim());
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
+                        return;
+                    }
+                    //수신받으면 행동함. 102를 받으면 LED On, 103을 받으면 LED Off.
+                    if(receivedNumber == 102){
                         mLedStatus.setText("LED On");
                         mLED1.setChecked(true);
-                    }else if(readMessage.equals("-2")) {
+                    }else if(receivedNumber == 103){
                         mLedStatus.setText("LED Off");
                         mLED1.setChecked(false);
-                    }else if(0 <= Integer.parseInt(readMessage)){
-                        try {
-                            mReceiveNumber.setText(readMessage); //난수 받아와서 읽음
-                        }catch (NumberFormatException e){
-                            e.printStackTrace();
-                        }
+                    }else if(0 <= receivedNumber){
+                       mReceiveNumber.setText(String.valueOf(receivedNumber));
                     }
                 }
 
@@ -286,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void blinkOff(){
         if(mConnectedThread != null){
-            mConnectedThread.write("4"); //Blink 토글 해제시 쓰레드에 2 입력
+            mConnectedThread.write("4"); //Blink 토글 해제시 쓰레드에 4 입력
             mLedStatus.setText("LED가 꺼졌습니다.");
         }
     }
