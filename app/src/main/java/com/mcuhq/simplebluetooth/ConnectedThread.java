@@ -20,8 +20,8 @@ public class ConnectedThread extends Thread {
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
 
-        // Get the input and output streams, using temp objects because
-        // member streams are final
+        // 입력 및 출력 스트림 가져오기
+        // 멤버 스트림이 최종.
         try {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
@@ -33,20 +33,20 @@ public class ConnectedThread extends Thread {
 
     @Override
     public void run() {
-        byte[] buffer = new byte[1024];  // buffer store for the stream
-        int bytes; // bytes returned from read()
-        // Keep listening to the InputStream until an exception occurs
+        byte[] buffer = new byte[1024];  // 스트림에 대한 버퍼 저장소
+        int bytes; // read()에서 반환된 바이트 수
+        // 예외가 발생할 때까지 InputStream 대기
         while (true) {
             try {
-                // Read from the InputStream
+                // InputStream 읽기
                 bytes = mmInStream.available();
                 if(bytes != 0) {
                     buffer = new byte[1024];
-                    SystemClock.sleep(100); //pause and wait for rest of data. Adjust this depending on your sending speed.
-                    bytes = mmInStream.available(); // how many bytes are ready to be read?
-                    bytes = mmInStream.read(buffer, 0, bytes); // record how many bytes we actually read
+                    SystemClock.sleep(100); //데이터 일시 정지 및 대기. 전송 속도에 따라 값 조정.
+                    bytes = mmInStream.available();
+                    bytes = mmInStream.read(buffer, 0, bytes); // 읽힌 read()바이트 수 기록
                     mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget(); // Send the obtained bytes to the UI activity
+                            .sendToTarget(); // 받은 바이트 UI로 보내기.
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -56,15 +56,15 @@ public class ConnectedThread extends Thread {
         }
     }
 
-    /* Call this from the main activity to send data to the remote device */
+    /* 원격 장치로 데이터를 보내기 위한 기본활동 호출 */
     public void write(String input) {
-        byte[] bytes = input.getBytes();           //converts entered String into bytes
+        byte[] bytes = input.getBytes(); //입력한 문자열을 바이트로 변환.
         try {
             mmOutStream.write(bytes);
         } catch (IOException e) { }
     }
 
-    /* Call this from the main activity to shutdown the connection */
+    /* 연결 종료 */
     public void cancel() {
         try {
             mmSocket.close();

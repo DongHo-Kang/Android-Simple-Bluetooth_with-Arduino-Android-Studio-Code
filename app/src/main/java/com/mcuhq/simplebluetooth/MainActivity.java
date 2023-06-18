@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public final static int MESSAGE_READ = 2; // 메시지 업데이트를 식별하기 위해 블루투스 핸들러에서 사용
     final static int CONNECTING_STATUS = 3; // 메시지 상태를 식별하기 위해 블루투스 핸들러에서 사용
 
-    // GUI Components
+    // GUI 요소 설정
     private TextView mBluetoothStatus, mReadBuffer, mLedStatus, mReceiveNumber;
     private Button mScanBtn, mOffBtn, mListPairedDevicesBtn, mDiscoverBtn;
     private ListView mDevicesListView;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //activity_main.xml과 연결
         mBluetoothStatus = (TextView)findViewById(R.id.bluetooth_status);
         mReadBuffer = (TextView) findViewById(R.id.read_buffer);
         mScanBtn = (Button)findViewById(R.id.scan);
@@ -278,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void ledOff(){
         if(mConnectedThread != null){
-            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 1 입력
+            mConnectedThread.write("3"); //LED 토글 해제시 쓰레드에 3 입력
             mLedStatus.setText("LED Off");
         }
     }
@@ -295,16 +296,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    //ListView항목 클릭 시 호출되는 이벤트 리스너
     private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            if(!mBTAdapter.isEnabled()) {
+            //클릭 시 블루투스가 활성되어 있는지 확인
+            if(!mBTAdapter.isEnabled()) { //비활성 시 Toast메시지로 사용자에게 알림
                 Toast.makeText(getBaseContext(), "블루투스 꺼져 있음.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            //활성화 시 클릭된 정보 추출
             mBluetoothStatus.setText("연결중...");
             //마지막 17자인 장치 MAC주소를 가져옴.
             String info = ((TextView) view).getText().toString();
