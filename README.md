@@ -25,5 +25,5 @@ http://mcuhq.com/27/simple-android-bluetooth-application-with-arduino-example �
 1. LED 깜박이기 기능 추가
 2. ESP32에서 보내는 난수 수신 기능
 
-# 아두이노 코드 보러 가기
+# 아두이노 코드 바로 가기
 https://github.com/DongHo-Kang/Android-Simple-Bluetooth_with-Arduino--Arduino-code-.git
